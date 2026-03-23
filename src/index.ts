@@ -6,7 +6,7 @@ import { chatRoutes } from "./routes/chat.js";
 const app = Fastify({ logger: true });
 
 const corsOrigins = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(",")
+  ? process.env.CORS_ORIGINS.split(",").map((s) => s.trim())
   : ["http://localhost:5173", "http://localhost:5174"];
 
 await app.register(cors, {

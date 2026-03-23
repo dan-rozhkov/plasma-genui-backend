@@ -35,11 +35,17 @@ export async function chatRoutes(app: FastifyInstance) {
       abortSignal: abortController.signal,
     });
 
-    reply.raw.writeHead(200, {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-    });
+    reply
+      .code(200)
+      .header("Content-Type", "text/event-stream")
+      .header("Cache-Control", "no-cache")
+      .header("Connection", "keep-alive");
+    // Send Fastify-managed headers (including CORS) to the client
+    reply.raw.writeHead(
+      200,
+      reply.getHeaders() as Record<string, string | string[]>
+    );
+    reply.hijack();
 
     let isFirst = true;
     for await (const chunk of result.textStream) {
